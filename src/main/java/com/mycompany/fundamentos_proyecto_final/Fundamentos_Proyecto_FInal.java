@@ -1,19 +1,26 @@
 package com.mycompany.fundamentos_proyecto_final;
-
+import java.util.Scanner;
 public class Fundamentos_Proyecto_FInal {
     public static String texto = "";
-    public static byte labetintoSeleccionado=-1;
+    private static final java.util.Scanner s = new java.util.Scanner(System.in);
+    public static String labetintoSeleccionado="";
     public static void main(String[] args) {
         menu();
     }//Close Main
+    private static int leerEntero(){
+        try{
+            return Integer.parseInt(s.nextLine().trim());
+        }catch(NumberFormatException e){
+            return -1;
+        }
+    }//close leerEnter
     public static void menu(){
-        java.util.Scanner s = new java.util.Scanner(System.in);
         byte menu = 0;
         do {   
             if(texto.isEmpty())
                 System.out.println("No se ha cargago ningún laberinto");
             if(!texto.isEmpty())
-                System.out.printf("Se ha seleccionado el laberinto: %d\n", labetintoSeleccionado);
+                System.out.printf("Se ha seleccionado el laberinto: %s\n", labetintoSeleccionado);
             System.out.println("======MENU=======\n"+
                                     "Elecciones:\n" +
                                     "1.-Cargar laberinto\n" +
@@ -74,7 +81,41 @@ public class Fundamentos_Proyecto_FInal {
         return contenido;
     }//Close cargarLaberinto
     private static void elegirLaberinto(){
-    
+        java.io.File carpeta = new java.io.File(".");
+        java.io.File[] archivos = carpeta.listFiles(
+        (dir, nombre) -> nombre.toLowerCase().endsWith(".txt"));
+        if (archivos == null || archivos.length == 0) {
+            System.out.println("No se encontraron laberintos en: "+ carpeta.getPath());
+            return;
+        }
+        java.util.Arrays.sort(archivos);
+        System.out.println("Laberintos disponibles:");
+        for (int i = 0; i < archivos.length; i++) {
+            System.out.println((i+1) + ".- "+archivos[i]);
+        }
+        System.out.println("0.- Cancelar");
+        int opcion;
+        do {            
+            System.out.println("Elige el laberinto");
+            opcion = leerEntero();
+            if (opcion < 0 || opcion>archivos.length){
+                System.out.println("Elección no válida");
+                opcion = -1;
+            }
+        } while (opcion == -1);
+        if (opcion == 0) {
+            System.out.println("Cancelando...");
+            return;
+        }
+        java.io.File elegido =archivos[opcion - 1];
+        String contenido = cargarLaberinto(elegido.getPath());
+        if (contenido.isEmpty()) {
+            System.out.println("Archivo vacio o error al leer");
+            return;
+       }
+        texto = contenido;
+        labetintoSeleccionado = elegido.getName();
+        System.out.println("Cargando: " + labetintoSeleccionado); 
     }//close elegirLbaerinto
     private static void resolverDFS(){
     
