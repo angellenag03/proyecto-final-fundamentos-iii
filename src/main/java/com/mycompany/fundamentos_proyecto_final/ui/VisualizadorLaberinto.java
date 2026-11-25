@@ -1,7 +1,7 @@
 package com.mycompany.fundamentos_proyecto_final.ui;
 
 import com.mycompany.fundamentos_proyecto_final.modelo.Grafo;
-import com.mycompany.fundamentos_proyecto_final.modelo.Laberinto;
+import com.mycompany.fundamentos_proyecto_final.modelo.GrafoMatriz;
 import com.mycompany.fundamentos_proyecto_final.modelo.Vertice;
 
 import java.util.HashSet;
@@ -39,7 +39,7 @@ public class VisualizadorLaberinto {
      * Imprime el laberinto tal como está en la cuadrícula,
      * sin resaltar ningún vértice.
      */
-    public static void imprimirLaberinto(Laberinto lab) {
+    public static void imprimirLaberinto(GrafoMatriz lab) {
         if (lab == null) {
             System.out.println("[Sin laberinto cargado]");
             return;
@@ -66,7 +66,7 @@ public class VisualizadorLaberinto {
      * @param ordenVisita Lista cronológica de vértices visitados.
      * @param grafo       Grafo con el camino solución ya calculado.
      */
-    public static void despliegaLaberinto(Laberinto lab,
+    public static void despliegaLaberinto(GrafoMatriz lab,
                                           List<Vertice> ordenVisita,
                                           Grafo grafo) {
         if (lab == null || ordenVisita == null) return;
@@ -119,7 +119,7 @@ public class VisualizadorLaberinto {
      * @param tiempoNs         Tiempo de ejecución en nanosegundos.
      */
     public static void imprimirResultado(String nombreAlgoritmo,
-                                         Laberinto lab,
+                                         GrafoMatriz lab,
                                          List<Vertice> ordenVisita,
                                          Grafo grafo,
                                          long tiempoNs) {
@@ -160,7 +160,7 @@ public class VisualizadorLaberinto {
      * Muestra las tres soluciones (DFS, BFS, Dijkstra) en texto de forma
      * comparativa y consecutiva. Reutiliza los resultados ya cacheados.
      */
-    public static void imprimirTresSoluciones(Laberinto lab, Grafo grafo,
+    public static void imprimirTresSoluciones(GrafoMatriz lab, Grafo grafo,
                                                List<Vertice> resDFS,
                                                List<Vertice> resBFS,
                                                List<Vertice> resDijkstra,

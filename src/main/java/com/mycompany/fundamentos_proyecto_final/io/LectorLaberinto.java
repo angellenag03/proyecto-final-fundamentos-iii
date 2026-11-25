@@ -2,7 +2,7 @@ package com.mycompany.fundamentos_proyecto_final.io;
 
 import com.mycompany.fundamentos_proyecto_final.modelo.Arcos;
 import com.mycompany.fundamentos_proyecto_final.modelo.Grafo;
-import com.mycompany.fundamentos_proyecto_final.modelo.Laberinto;
+import com.mycompany.fundamentos_proyecto_final.modelo.GrafoMatriz;
 import com.mycompany.fundamentos_proyecto_final.modelo.Vertice;
 
 import java.io.BufferedReader;
@@ -39,7 +39,7 @@ public class LectorLaberinto {
      * @return      Laberinto listo para usar.
      * @throws Exception Si el archivo no se encuentra o no pasa la validación.
      */
-    public static Laberinto cargarDesdeArchivo(String ruta) throws Exception {
+    public static GrafoMatriz cargarDesdeArchivo(String ruta) throws Exception {
         java.io.File archivo = new java.io.File(ruta);
         if (!archivo.exists()) {
             archivo = new java.io.File("laberintos/" + ruta);
@@ -59,14 +59,14 @@ public class LectorLaberinto {
 
     /**
      * Parsea el contenido de texto de un laberinto y construye el objeto
-     * {@link Laberinto} con su {@link Grafo} completo.
+     * {@link GrafoMatriz} con su {@link Grafo} completo.
      *
      * @param contenido  Texto completo del archivo (tal como lo lee el Main).
      * @param nombre     Nombre del archivo (para identificación).
      * @return           Laberinto listo para usar.
      * @throws Exception Si el contenido no pasa la validación.
      */
-    public static Laberinto parsear(String contenido, String nombre) throws Exception {
+    public static GrafoMatriz parsear(String contenido, String nombre) throws Exception {
 
         // ---- 1. Leer líneas SIN trim() ---------------------------------------
         List<String> lineas = new ArrayList<>();
@@ -135,7 +135,7 @@ public class LectorLaberinto {
             List<int[]> celdas = perimetroEnOrden(cuadricula, filas, columnas);
             List<int[]> transitables = new ArrayList<>();
             for (int[] pos : celdas) {
-                if (Laberinto.esTransitable(cuadricula[pos[0]][pos[1]])) {
+                if (GrafoMatriz.esTransitable(cuadricula[pos[0]][pos[1]])) {
                     transitables.add(pos);
                 }
             }
@@ -160,7 +160,7 @@ public class LectorLaberinto {
 
         for (int f = 0; f < filas; f++) {
             for (int c = 0; c < columnas; c++) {
-                if (Laberinto.esTransitable(cuadricula[f][c])) {
+                if (GrafoMatriz.esTransitable(cuadricula[f][c])) {
                     int id = f * columnas + c;
                     Vertice v = new Vertice(id, f, c);
                     mapa[f][c] = v;
@@ -195,7 +195,7 @@ public class LectorLaberinto {
         grafo.setSalida(mapa[posSalida[0]][posSalida[1]]);
 
         // ---- 6. Ensamblar el Laberinto --------------------------------------
-        Laberinto lab = new Laberinto();
+        GrafoMatriz lab = new GrafoMatriz();
         lab.setCuadricula(cuadricula);
         lab.setGrafo(grafo);
         lab.setNombreArchivo(nombre);

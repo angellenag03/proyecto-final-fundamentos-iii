@@ -2,7 +2,7 @@ package com.mycompany.fundamentos_proyecto_final;
 
 import com.mycompany.fundamentos_proyecto_final.io.LectorLaberinto;
 import com.mycompany.fundamentos_proyecto_final.modelo.Grafo;
-import com.mycompany.fundamentos_proyecto_final.modelo.Laberinto;
+import com.mycompany.fundamentos_proyecto_final.modelo.GrafoMatriz;
 import com.mycompany.fundamentos_proyecto_final.modelo.Vertice;
 
 import java.util.List;
@@ -19,7 +19,7 @@ public class PruebaLectura {
 
             try {
                 // ---- 1. Carga y validación -----------------------------------
-                Laberinto lab = LectorLaberinto.cargarDesdeArchivo(ruta);
+                GrafoMatriz lab = LectorLaberinto.cargarDesdeArchivo(ruta);
                 System.out.println("✔ Cargado con éxito");
                 System.out.printf("  Dimensiones : %d filas x %d columnas%n",
                         lab.getFilas(), lab.getColumnas());

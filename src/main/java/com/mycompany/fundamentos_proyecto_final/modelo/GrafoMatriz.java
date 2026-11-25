@@ -8,7 +8,7 @@ package com.mycompany.fundamentos_proyecto_final.modelo;
  *   - El Grafo construido a partir de ella.
  *   - Referencias a los vértices de entrada y salida.
  */
-public class Laberinto {
+public class GrafoMatriz {
 
     private char[][] cuadricula;
     private int filas;
@@ -16,7 +16,7 @@ public class Laberinto {
     private Grafo grafo;
     private String nombreArchivo;
 
-    public Laberinto() {
+    public GrafoMatriz() {
         this.grafo = new Grafo();
     }
 
