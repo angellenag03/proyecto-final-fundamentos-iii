@@ -1,4 +1,4 @@
-package com.mycompany.fundamentos_proyecto_final.modelo;
+package modelo;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -11,38 +11,16 @@ import java.util.PriorityQueue;
 import java.util.Set;
 import java.util.Stack;
 
-/**
- * Grafo no dirigido representado mediante Listas Ligadas de Adyacencia.
- *
- * Implementa tres algoritmos de búsqueda de camino en laberintos:
- *   - DFS  (Búsqueda en profundidad iterativa con pila LIFO)
- *   - BFS  (Búsqueda en anchura con cola FIFO)
- *   - caminoMasCorto (Dijkstra con desempate por menor id)
- *
- * Orden de exploración de vecinos: Arriba → Derecha → Abajo → Izquierda.
- * En DFS iterativo con pila LIFO se apilan en orden INVERSO:
- *   Izquierda, Abajo, Derecha, Arriba  (para que Arriba se procese primero).
- */
 public class Grafo {
 
-    // -------------------------------------------------------------------------
-    // Estructura principal: lista de adyacencia
-    // -------------------------------------------------------------------------
-    /** Mapa id → lista de arcos salientes */
     private final Map<Integer, LinkedList<Arcos>> adyacencia;
-
-    /** Colección de todos los vértices */
     private final Vertices vertices;
 
-    // -------------------------------------------------------------------------
     // Entrada / Salida del laberinto
-    // -------------------------------------------------------------------------
     private Vertice entrada;
     private Vertice salida;
 
-    // -------------------------------------------------------------------------
     // Resultados cacheados
-    // -------------------------------------------------------------------------
     private List<Vertice> resultadoDFS;
     private List<Vertice> resultadoBFS;
     private List<Vertice> resultadoDijkstra;
@@ -51,9 +29,7 @@ public class Grafo {
     private List<Vertice> camino;
     private boolean haySolucion;
 
-    // -------------------------------------------------------------------------
     // Constructor
-    // -------------------------------------------------------------------------
     public Grafo() {
         this.adyacencia = new HashMap<>();
         this.vertices = new Vertices();
@@ -61,10 +37,7 @@ public class Grafo {
         this.haySolucion = false;
     }
 
-    // -------------------------------------------------------------------------
     // Construcción del grafo
-    // -------------------------------------------------------------------------
-
     /**
      * Agrega un vértice al grafo.
      * Crea su lista de adyacencia si aún no existe.
@@ -88,35 +61,27 @@ public class Grafo {
         agregarArco(origen, destino, 1);
     }
 
-    // -------------------------------------------------------------------------
     // Entrada / Salida
-    // -------------------------------------------------------------------------
     public void setEntrada(Vertice v) { this.entrada = v; }
     public void setSalida(Vertice v)  { this.salida  = v; }
     public Vertice getEntrada() { return entrada; }
     public Vertice getSalida()  { return salida;  }
 
-    // -------------------------------------------------------------------------
     // Accesos generales
-    // -------------------------------------------------------------------------
     public Vertices getVertices() { return vertices; }
 
     public LinkedList<Arcos> getVecinos(int id) {
         return adyacencia.getOrDefault(id, new LinkedList<>());
     }
 
-    // -------------------------------------------------------------------------
     // Resultados
-    // -------------------------------------------------------------------------
     public boolean haySolucion()           { return haySolucion; }
     public List<Vertice> getCamino()       { return Collections.unmodifiableList(camino); }
     public List<Vertice> getResultadoDFS() { return resultadoDFS  != null ? Collections.unmodifiableList(resultadoDFS)  : null; }
     public List<Vertice> getResultadoBFS() { return resultadoBFS  != null ? Collections.unmodifiableList(resultadoBFS)  : null; }
     public List<Vertice> getResultadoDijkstra() { return resultadoDijkstra != null ? Collections.unmodifiableList(resultadoDijkstra) : null; }
 
-    // =========================================================================
     // ALGORITMO 1: DFS  (iterativo con pila LIFO)
-    // =========================================================================
     /**
      * Recorre el grafo en profundidad a partir de la entrada.
      * Orden de vecinos real: Arriba → Derecha → Abajo → Izquierda.
@@ -179,9 +144,7 @@ public class Grafo {
         return Collections.unmodifiableList(orden);
     }
 
-    // =========================================================================
     // ALGORITMO 2: BFS  (cola FIFO)
-    // =========================================================================
     /**
      * Recorre el grafo en anchura a partir de la entrada.
      * Orden de vecinos: Arriba → Derecha → Abajo → Izquierda.
@@ -236,9 +199,7 @@ public class Grafo {
         return Collections.unmodifiableList(orden);
     }
 
-    // =========================================================================
     // ALGORITMO 3: Dijkstra (caminoMasCorto)
-    // =========================================================================
     /**
      * Implementación de Dijkstra independiente de BFS.
      * Desempata distancias iguales eligiendo el Vertice con MENOR id.
@@ -316,10 +277,7 @@ public class Grafo {
         return Collections.unmodifiableList(orden);
     }
 
-    // =========================================================================
     // Utilidades internas
-    // =========================================================================
-
     /**
      * Retorna los vecinos del vértice dado ordenados:
      * Arriba → Derecha → Abajo → Izquierda.

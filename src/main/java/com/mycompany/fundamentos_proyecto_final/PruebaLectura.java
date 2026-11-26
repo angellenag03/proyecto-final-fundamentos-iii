@@ -1,9 +1,9 @@
 package com.mycompany.fundamentos_proyecto_final;
 
-import com.mycompany.fundamentos_proyecto_final.io.LectorLaberinto;
-import com.mycompany.fundamentos_proyecto_final.modelo.Grafo;
-import com.mycompany.fundamentos_proyecto_final.modelo.GrafoMatriz;
-import com.mycompany.fundamentos_proyecto_final.modelo.Vertice;
+import io.LectorLaberinto;
+import modelo.Grafo;
+import modelo.GrafoMatriz;
+import modelo.Vertice;
 
 import java.util.List;
 

@@ -1,10 +1,5 @@
-package com.mycompany.fundamentos_proyecto_final.modelo;
+package modelo;
 
-/**
- * Representa un vértice del grafo de laberinto.
- * Cada carácter transitable (fila, columna) es un Vertice individual con id único.
- * equals y hashCode se basan únicamente en id.
- */
 public class Vertice {
 
     private final int id;

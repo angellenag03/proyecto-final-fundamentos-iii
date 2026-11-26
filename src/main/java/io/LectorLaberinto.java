@@ -1,9 +1,9 @@
-package com.mycompany.fundamentos_proyecto_final.io;
+package io;
 
-import com.mycompany.fundamentos_proyecto_final.modelo.Arcos;
-import com.mycompany.fundamentos_proyecto_final.modelo.Grafo;
-import com.mycompany.fundamentos_proyecto_final.modelo.GrafoMatriz;
-import com.mycompany.fundamentos_proyecto_final.modelo.Vertice;
+import modelo.Arcos;
+import modelo.Grafo;
+import modelo.GrafoMatriz;
+import modelo.Vertice;
 
 import java.io.BufferedReader;
 import java.io.StringReader;
@@ -203,10 +203,7 @@ public class LectorLaberinto {
         return lab;
     }
 
-    // =========================================================================
     // Utilidades privadas
-    // =========================================================================
-
     /** Verifica que el carácter es uno de los permitidos por la especificación. */
     private static boolean esCaracterValido(char c) {
         return c == '+' || c == '-' || c == '|'
@@ -220,13 +217,13 @@ public class LectorLaberinto {
      * Las esquinas se cuentan una sola vez.
      */
     private static List<int[]> perimetroEnOrden(char[][] c, int filas, int columnas) {
-    List<int[]> lista = new ArrayList<>();
-    for (int f = 0; f < filas; f++) {
-        for (int col = 0; col < columnas; col++) {
-            boolean esBorde = (f == 0 || f == filas - 1 || col == 0 || col == columnas - 1);
-            if (esBorde) lista.add(new int[]{f, col});
+        List<int[]> lista = new ArrayList<>();
+        for (int f = 0; f < filas; f++) {
+            for (int col = 0; col < columnas; col++) {
+                boolean esBorde = (f == 0 || f == filas - 1 || col == 0 || col == columnas - 1);
+                if (esBorde) lista.add(new int[]{f, col});
+            }
         }
+        return lista;
     }
-    return lista;
-}
 }

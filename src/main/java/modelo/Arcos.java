@@ -1,4 +1,4 @@
-package com.mycompany.fundamentos_proyecto_final.modelo;
+package modelo;
 
 /**
  * Representa una arista (arco) del grafo no dirigido de laberinto.

@@ -1,8 +1,8 @@
-package com.mycompany.fundamentos_proyecto_final.ui;
+package ui;
 
-import com.mycompany.fundamentos_proyecto_final.modelo.Grafo;
-import com.mycompany.fundamentos_proyecto_final.modelo.GrafoMatriz;
-import com.mycompany.fundamentos_proyecto_final.modelo.Vertice;
+import modelo.Grafo;
+import modelo.GrafoMatriz;
+import modelo.Vertice;
 
 import java.util.HashSet;
 import java.util.List;
@@ -24,17 +24,14 @@ import java.util.Set;
  *   'S'          → salida
  *   '·'          → vértice visitado durante la búsqueda
  *   '█'          → vértice actual que se está procesando
- *   '*'          → celda perteneciente al camino solución
+ *   '#'          → celda perteneciente al camino solución
  */
 public class VisualizadorLaberinto {
 
     // Pausa entre frames de la animación (milisegundos). 0 = esperar tecla.
     private static final long PAUSA_MS = 80;
 
-    // =========================================================================
     // Impresión básica del laberinto
-    // =========================================================================
-
     /**
      * Imprime el laberinto tal como está en la cuadrícula,
      * sin resaltar ningún vértice.
@@ -52,11 +49,8 @@ public class VisualizadorLaberinto {
         }
         imprimirLeyenda();
     }
-
-    // =========================================================================
+   
     // Animación paso a paso (texto)
-    // =========================================================================
-
     /**
      * Muestra el laberinto paso a paso, resaltando cada vértice en
      * {@code ordenVisita} a medida que es "procesado".
@@ -105,10 +99,7 @@ public class VisualizadorLaberinto {
         imprimirLeyenda();
     }
 
-    // =========================================================================
     // Resumen de un algoritmo (sin animación)
-    // =========================================================================
-
     /**
      * Imprime un resumen completo del resultado de un algoritmo.
      *
@@ -152,10 +143,7 @@ public class VisualizadorLaberinto {
         imprimirLeyenda();
     }
 
-    // =========================================================================
     // Tres soluciones juntas
-    // =========================================================================
-
     /**
      * Muestra las tres soluciones (DFS, BFS, Dijkstra) en texto de forma
      * comparativa y consecutiva. Reutiliza los resultados ya cacheados.
@@ -196,10 +184,7 @@ public class VisualizadorLaberinto {
         System.out.println("╚══════════════════════════════════════╝\n");
     }
 
-    // =========================================================================
     // Utilidades internas
-    // =========================================================================
-
     /**
      * Dibuja un frame del laberinto sobre la cuadrícula base.
      *
@@ -223,9 +208,9 @@ public class VisualizadorLaberinto {
 
                 if (actual != null && actual.getFila() == f && actual.getColumna() == c) {
                     sb.append('█');
-                } else if (camino != null && camino.contains(id)
+                } else if (camino != null && camino.contains(id) // camino
                         && ch != 'E' && ch != 'S') {
-                    sb.append('*');
+                    sb.append('#');
                 } else if (visitados.contains(id) && ch != 'E' && ch != 'S') {
                     sb.append('·');
                 } else {
