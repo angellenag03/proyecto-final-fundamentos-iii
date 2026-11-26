@@ -127,7 +127,7 @@ public class Grafo {
      */
     public List<Vertice> DFS() {
         List<Vertice> orden = new ArrayList<>();
-
+        
         if (entrada == null) return orden;
 
         Set<Integer> visitado = new HashSet<>();
@@ -160,7 +160,7 @@ public class Grafo {
                 Vertice vecino = vecinosOrdenados.get(i);
                 if (!visitado.contains(vecino.getId())) {
                     // Solo registrar predecesor si aún no tiene uno asignado
-                    predecesor.putIfAbsent(vecino.getId(), actual.getId());
+                    predecesor.put(vecino.getId(), actual.getId());
                     pila.push(vecino);
                 }
             }

@@ -220,28 +220,13 @@ public class LectorLaberinto {
      * Las esquinas se cuentan una sola vez.
      */
     private static List<int[]> perimetroEnOrden(char[][] c, int filas, int columnas) {
-        List<int[]> lista = new ArrayList<>();
-
-        // Fila superior: izq → der
-        for (int col = 0; col < columnas; col++)
-            lista.add(new int[]{0, col});
-
-        // Columna derecha: fila 1 → filas-2  (esquinas ya incluidas)
-        for (int fila = 1; fila < filas - 1; fila++)
-            lista.add(new int[]{fila, columnas - 1});
-
-        // Fila inferior: der → izq  (si hay más de 1 fila)
-        if (filas > 1) {
-            for (int col = columnas - 1; col >= 0; col--)
-                lista.add(new int[]{filas - 1, col});
+    List<int[]> lista = new ArrayList<>();
+    for (int f = 0; f < filas; f++) {
+        for (int col = 0; col < columnas; col++) {
+            boolean esBorde = (f == 0 || f == filas - 1 || col == 0 || col == columnas - 1);
+            if (esBorde) lista.add(new int[]{f, col});
         }
-
-        // Columna izquierda: filas-2 → 1  (esquinas ya incluidas)
-        if (columnas > 1) {
-            for (int fila = filas - 2; fila >= 1; fila--)
-                lista.add(new int[]{fila, 0});
-        }
-
-        return lista;
     }
+    return lista;
+}
 }

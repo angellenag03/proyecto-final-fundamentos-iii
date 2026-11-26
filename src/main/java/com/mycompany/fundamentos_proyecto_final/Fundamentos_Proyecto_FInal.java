@@ -1,9 +1,17 @@
 package com.mycompany.fundamentos_proyecto_final;
-import java.util.Scanner;
+import com.mycompany.fundamentos_proyecto_final.io.LectorLaberinto;
+import com.mycompany.fundamentos_proyecto_final.modelo.Grafo;
+import com.mycompany.fundamentos_proyecto_final.modelo.GrafoMatriz;
+import com.mycompany.fundamentos_proyecto_final.modelo.Vertice;
+import com.mycompany.fundamentos_proyecto_final.ui.VisualizadorLaberinto;
+
+import java.util.List;
 public class Fundamentos_Proyecto_FInal {
-    public static String texto = "";
+   public static GrafoMatriz laberinto = null;
     private static final java.util.Scanner s = new java.util.Scanner(System.in);
-    public static String labetintoSeleccionado="";
+
+    private static final int ALG_DFS = 0, ALG_BFS = 1, ALG_DIJKSTRA = 2;
+    private static final String[] NOMBRES = {"DFS", "BFS", "Dijkstra"};
     public static void main(String[] args) {
         menu();
     }//Close Main
@@ -15,12 +23,12 @@ public class Fundamentos_Proyecto_FInal {
         }
     }//close leerEnter
     public static void menu(){
-        byte menu = 0;
+        int opcion = 0;
         do {   
-            if(texto.isEmpty())
-                System.out.println("No se ha cargago ningún laberinto");
-            if(!texto.isEmpty())
-                System.out.printf("Se ha seleccionado el laberinto: %s\n", labetintoSeleccionado);
+            if (laberinto == null)
+                System.out.println("No se ha cargado ningún laberinto");
+            else
+                System.out.printf("Se ha seleccionado el laberinto: %s%n", laberinto.getNombreArchivo());
             System.out.println("======MENU=======\n"+
                                     "Elecciones:\n" +
                                     "1.-Cargar laberinto\n" +
@@ -29,8 +37,8 @@ public class Fundamentos_Proyecto_FInal {
                                     "4-.Resolver laberinto con Dijkstra (camino más corto)\n" +
                                     "5.-Mostrar las tres soluciones\n" +
                                     "6.-Salir");
-            menu = s.nextByte();
-            switch (menu) {
+            opcion = leerEntero();
+            switch (opcion) {
                 case 1:
                     System.out.println("Cargando laberinto");
                     elegirLaberinto();
@@ -64,7 +72,7 @@ public class Fundamentos_Proyecto_FInal {
                     System.out.println("\n");
                     break;
             }
-        } while (menu != 6);
+        } while (opcion != 6);
 
     }//Close Manu
     public static String cargarLaberinto(String ruta){
@@ -108,25 +116,77 @@ public class Fundamentos_Proyecto_FInal {
             return;
         }
         java.io.File elegido =archivos[opcion - 1];
-        String contenido = cargarLaberinto(elegido.getPath());
-        if (contenido.isEmpty()) {
-            System.out.println("Archivo vacio o error al leer");
-            return;
-       }
-        texto = contenido;
-        labetintoSeleccionado = elegido.getName();
-        System.out.println("Cargando: " + labetintoSeleccionado); 
+        try{
+            GrafoMatriz nuevo = LectorLaberinto.cargarDesdeArchivo(elegido.getPath());
+            laberinto= nuevo;
+            System.out.println("Cargando: " + laberinto);
+        }catch (Exception e){
+            System.out.println("No se pudo cargar el archivo, " + e.getMessage());
+        }
     }//close elegirLbaerinto
+    private static boolean hayLaberitno(){
+        if (laberinto == null) {
+            System.out.println("No hay laberitno");
+            return false;
+        }
+        return true;
+    }
+    private static boolean preguntarAnimacion(){
+        System.out.println("¿Desea ver la animación?(s/n)");
+        return s.nextLine().trim().equalsIgnoreCase("s");
+    }
+    private static int resolver (int algoritmo, boolean animar){
+        Grafo grafo = laberinto.getGrafo();
+        long t0 = System.nanoTime();
+        List<Vertice> orden;
+        switch (algoritmo){
+            case ALG_DFS: 
+                orden = grafo.DFS();
+                break;
+            case ALG_BFS:
+                orden = grafo.BFS();
+                break;
+            default:
+                orden = grafo.caminoMasCorto();
+                break;
+        }
+        long tiempo = System.nanoTime() - t0;
+        if (animar) {
+            VisualizadorLaberinto.despliegaLaberinto(laberinto, orden, grafo);
+        }
+        VisualizadorLaberinto.imprimirResultado(NOMBRES[algoritmo], laberinto, orden, grafo, tiempo);
+        return grafo.haySolucion() ? grafo.getCamino().size() - 1 : -1;
+    }
     private static void resolverDFS(){
-    
+        if (!hayLaberitno()) {
+            return;
+        }
+        resolver(ALG_DFS, preguntarAnimacion());
     }//close resolverDFS
     private static void resolverBFS(){
-    
+        if (!hayLaberitno()) {
+            return;
+        }
+        resolver(ALG_BFS, preguntarAnimacion());
     }//close resolverBFS
     private static void resolverCorto(){
-    
+        if (!hayLaberitno()) {
+            return;
+        }
+        resolver(ALG_DIJKSTRA, preguntarAnimacion());
     }//Close resolverCorto
     private static void mostrarTodasSoluciones(){
-    
+        if (!hayLaberitno()) {
+            return;
+        }
+        int[] longitudes = new int[3];
+        for (int a = 0; a < 3; a++) {
+            longitudes[a] = resolver(a, false);
+        }
+        System.out.println("======RESUMEN======");
+        for (int a = 0; a < 3; a++) {
+            String texto = longitudes[a] >= 0 ? longitudes[a] + " movimientos" : "sin solución";
+            System.out.printf("%-9s %s%n", NOMBRES[a], texto);
+        }
     }//Close mostrarTodasSoluciones
 }
