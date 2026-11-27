@@ -7,7 +7,7 @@ public class GrafoMatriz {
     private int columnas;
     private Grafo grafo;
     private String nombreArchivo;
-
+    private boolean celdasLogicas;
     public GrafoMatriz() {
         this.grafo = new Grafo();
     }
@@ -56,4 +56,6 @@ public class GrafoMatriz {
         Vertice s = grafo.getSalida();
         return s != null ? s.getColumna() : -1;
     }
+    public boolean isCeldasLogicas() {return celdasLogicas;}
+    public void setCeldasLogicas(boolean c){this.celdasLogicas = c;}
 }

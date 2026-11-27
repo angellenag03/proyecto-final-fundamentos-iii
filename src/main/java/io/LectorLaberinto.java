@@ -151,58 +151,122 @@ public class LectorLaberinto {
             cuadricula[posSalida[0]][posSalida[1]]   = 'S';
         }
 
-        // ---- 5. Construir el Grafo ------------------------------------------
+                // ---- 5. Construir el Grafo ------------------------------------------
         Grafo grafo = new Grafo();
+        boolean usaCeldasLogicas = esCuadriculaCeldasLogicas(cuadricula, filas, columnas);
 
-        // Generar id único por posición: id = fila * columnas + columna
-        // (mismo esquema que GrafoMatriz existente)
-        Vertice[][] mapa = new Vertice[filas][columnas];
-
-        for (int f = 0; f < filas; f++) {
-            for (int c = 0; c < columnas; c++) {
-                if (GrafoMatriz.esTransitable(cuadricula[f][c])) {
-                    int id = f * columnas + c;
-                    Vertice v = new Vertice(id, f, c);
-                    mapa[f][c] = v;
-                    grafo.agregarVertice(v);
-                }
-            }
+        if (usaCeldasLogicas) {
+            construirGrafoCeldasLogicas(cuadricula, filas, columnas, posEntrada, posSalida, grafo);
+        } else {
+            construirGrafoPorCaracter(cuadricula, filas, columnas, posEntrada, posSalida, grafo);
         }
-
-        // Conectar vecinos ortogonales (no diagonal, no atravesar paredes)
-        int[][] deltas = {{-1, 0}, {0, 1}, {1, 0}, {0, -1}};
-        for (int f = 0; f < filas; f++) {
-            for (int c = 0; c < columnas; c++) {
-                if (mapa[f][c] == null) continue;
-                for (int[] d : deltas) {
-                    int nf = f + d[0];
-                    int nc = c + d[1];
-                    if (nf >= 0 && nf < filas && nc >= 0 && nc < columnas
-                            && mapa[nf][nc] != null) {
-                        // Agregar solo en una dirección; el grafo lo hace bidireccional
-                        // pero como recorremos todo, evitar duplicados añadiendo
-                        // solo hacia abajo y hacia la derecha.
-                        if (d[0] > 0 || d[1] > 0) {
-                            grafo.agregarArco(mapa[f][c], mapa[nf][nc]);
-                        }
-                    }
-                }
-            }
-        }
-
-        // Registrar entrada y salida en el grafo
-        grafo.setEntrada(mapa[posEntrada[0]][posEntrada[1]]);
-        grafo.setSalida(mapa[posSalida[0]][posSalida[1]]);
 
         // ---- 6. Ensamblar el Laberinto --------------------------------------
         GrafoMatriz lab = new GrafoMatriz();
         lab.setCuadricula(cuadricula);
         lab.setGrafo(grafo);
         lab.setNombreArchivo(nombre);
+        lab.setCeldasLogicas(usaCeldasLogicas);
 
         return lab;
     }
+        /**
+     * Detecta el formato +--+ : filas = 2R+1, columnas = 3C+1 y un '+'
+     * en cada intersección (2r, 3c).
+     */
+    private static boolean esCuadriculaCeldasLogicas(char[][] cuadricula, int filas, int columnas) {
+        if (filas < 3 || columnas < 4) return false;
+        if (filas % 2 != 1 || (columnas - 1) % 3 != 0) return false;
+        for (int f = 0; f < filas; f += 2) {
+            for (int c = 0; c < columnas; c += 3) {
+                if (cuadricula[f][c] != '+') return false;
+            }
+        }
+        return true;
+    }
 
+    /** Un Vertice por celda lógica (r, cl). id = r * colsLog + cl. */
+    private static void construirGrafoCeldasLogicas(char[][] cuadricula, int filas, int columnas,
+                                                    int[] posEntrada, int[] posSalida, Grafo grafo) throws Exception {
+        int filasLog = (filas - 1) / 2;
+        int colsLog  = (columnas - 1) / 3;
+        Vertice[][] mapa = new Vertice[filasLog][colsLog];
+
+        for (int r = 0; r < filasLog; r++) {
+            int f = 2 * r + 1;
+            for (int cl = 0; cl < colsLog; cl++) {
+                if (GrafoMatriz.esTransitable(cuadricula[f][3 * cl + 1])
+                        || GrafoMatriz.esTransitable(cuadricula[f][3 * cl + 2])) {
+                    Vertice v = new Vertice(r * colsLog + cl, r, cl);
+                    mapa[r][cl] = v;
+                    grafo.agregarVertice(v);
+                }
+            }
+        }
+
+        // Conectar hacia abajo y hacia la derecha si no hay pared en medio
+        for (int r = 0; r < filasLog; r++) {
+            for (int cl = 0; cl < colsLog; cl++) {
+                Vertice actual = mapa[r][cl];
+                if (actual == null) continue;
+
+                if (r + 1 < filasLog && mapa[r + 1][cl] != null) {
+                    int fPared = 2 * (r + 1);
+                    if (GrafoMatriz.esTransitable(cuadricula[fPared][3 * cl + 1])
+                            && GrafoMatriz.esTransitable(cuadricula[fPared][3 * cl + 2])) {
+                        grafo.agregarArco(actual, mapa[r + 1][cl]);
+                    }
+                }
+                if (cl + 1 < colsLog && mapa[r][cl + 1] != null) {
+                    if (GrafoMatriz.esTransitable(cuadricula[2 * r + 1][3 * (cl + 1)])) {
+                        grafo.agregarArco(actual, mapa[r][cl + 1]);
+                    }
+                }
+            }
+        }
+
+        int[] ent = aCeldaLogica(posEntrada[0], posEntrada[1], filasLog, colsLog, columnas);
+        int[] sal = aCeldaLogica(posSalida[0], posSalida[1], filasLog, colsLog, columnas);
+        if (mapa[ent[0]][ent[1]] == null || mapa[sal[0]][sal[1]] == null) {
+            throw new Exception("La entrada o la salida no cae en una celda transitable.");
+        }
+        grafo.setEntrada(mapa[ent[0]][ent[1]]);
+        grafo.setSalida(mapa[sal[0]][sal[1]]);
+    }
+
+    /** Convierte una coordenada del texto (f, c) a su celda lógica (r, cl). */
+    private static int[] aCeldaLogica(int f, int c, int filasLog, int colsLog, int columnas) {
+        int r = Math.min(filasLog - 1, Math.max(0, (f - 1) / 2));
+        int cl;
+        if (c <= 0)                 cl = 0;
+        else if (c >= columnas - 1) cl = colsLog - 1;
+        else                        cl = Math.min(colsLog - 1, (c - 1) / 3);
+        return new int[]{r, cl};
+    }
+
+    /** Respaldo para archivos que NO tienen el formato +--+ (un vértice por carácter). */
+    private static void construirGrafoPorCaracter(char[][] cuadricula, int filas, int columnas,
+                                                  int[] posEntrada, int[] posSalida, Grafo grafo) {
+        Vertice[][] mapa = new Vertice[filas][columnas];
+        for (int f = 0; f < filas; f++) {
+            for (int c = 0; c < columnas; c++) {
+                if (GrafoMatriz.esTransitable(cuadricula[f][c])) {
+                    Vertice v = new Vertice(f * columnas + c, f, c);
+                    mapa[f][c] = v;
+                    grafo.agregarVertice(v);
+                }
+            }
+        }
+        for (int f = 0; f < filas; f++) {
+            for (int c = 0; c < columnas; c++) {
+                if (mapa[f][c] == null) continue;
+                if (c + 1 < columnas && mapa[f][c + 1] != null) grafo.agregarArco(mapa[f][c], mapa[f][c + 1]);
+                if (f + 1 < filas && mapa[f + 1][c] != null)    grafo.agregarArco(mapa[f][c], mapa[f + 1][c]);
+            }
+        }
+        grafo.setEntrada(mapa[posEntrada[0]][posEntrada[1]]);
+        grafo.setSalida(mapa[posSalida[0]][posSalida[1]]);
+    }
     // Utilidades privadas
     /** Verifica que el carácter es uno de los permitidos por la especificación. */
     private static boolean esCaracterValido(char c) {

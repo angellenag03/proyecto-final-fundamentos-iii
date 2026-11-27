@@ -75,19 +75,6 @@ public class Fundamentos_Proyecto_FInal {
         } while (opcion != 6);
 
     }//Close Manu
-    public static String cargarLaberinto(String ruta){
-        String contenido = "";
-        try{
-            java.io.File archivo = new java.io.File(ruta);
-            java.util.Scanner scanner = new java.util.Scanner(archivo);
-            while (scanner.hasNextLine()) {
-                contenido += scanner.nextLine() + "\n";
-            }
-        }catch (Exception e){
-            System.out.println("Problema al cargar archivo: " + e.getMessage());
-        }
-        return contenido;
-    }//Close cargarLaberinto
     private static void elegirLaberinto(){
         java.io.File carpeta = new java.io.File(".");
         java.io.File[] archivos = carpeta.listFiles(
@@ -99,7 +86,7 @@ public class Fundamentos_Proyecto_FInal {
         java.util.Arrays.sort(archivos);
         System.out.println("Laberintos disponibles:");
         for (int i = 0; i < archivos.length; i++) {
-            System.out.println((i+1) + ".- "+archivos[i]);
+            System.out.println((i+1) + ".- "+archivos[i].getName());
         }
         System.out.println("0.- Cancelar");
         int opcion;
@@ -119,7 +106,7 @@ public class Fundamentos_Proyecto_FInal {
         try{
             GrafoMatriz nuevo = LectorLaberinto.cargarDesdeArchivo(elegido.getPath());
             laberinto= nuevo;
-            System.out.println("Cargando: " + laberinto);
+            System.out.println("Cargando: " + laberinto.getNombreArchivo());
         }catch (Exception e){
             System.out.println("No se pudo cargar el archivo, " + e.getMessage());
         }
