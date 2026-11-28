@@ -6,7 +6,6 @@ import ui.MainFrame;
 public class FrameTest {
     public static void main(String[] args) {
         MainFrame frame = new MainFrame();
-        frame.setVisible(true);
-        
+        frame.setVisible(true);        
     }
 }

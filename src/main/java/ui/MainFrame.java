@@ -8,20 +8,21 @@ import modelo.Vertice;
 import java.awt.*;
 import java.io.File;
 import java.util.Arrays;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 import javax.swing.*;
 
 public class MainFrame extends JFrame {
     private final JComboBox<String> combo = new JComboBox<>();
     private final JLabel estado = new JLabel("Elige un laberinto");
+    private final JCheckBox chkAnimacion = new JCheckBox();
+    private final JLabel lblAnimacion = new JLabel("Mostrar Animación?");
+    private Timer animacionTimer;
     private GrafoMatriz lab;
     private List<Vertice> visitados;
     private List<Vertice> camino;
 
     private final JPanel dibujo = new JPanel() {
-        { setBackground(new Color(24, 26, 31)); }
+        { setBackground(new Color(10, 10, 10)); }
 
         @Override
         protected void paintComponent(Graphics g) {
@@ -86,7 +87,7 @@ public class MainFrame extends JFrame {
         JButton bfs = new JButton("BFS");
         JButton dij = new JButton("Dijkstra");
         JPanel barra = new JPanel();
-        for (Component c : new Component[]{combo, cargar, dfs, bfs, dij}) barra.add(c);
+        for (Component c : new Component[]{combo, cargar, dfs, bfs, dij, chkAnimacion, lblAnimacion}) barra.add(c);
 
         add(barra, BorderLayout.NORTH);
         add(dibujo, BorderLayout.CENTER);
@@ -106,6 +107,7 @@ public class MainFrame extends JFrame {
 
     private void cargar() {
         try {
+            if (animacionTimer != null && animacionTimer.isRunning()) animacionTimer.stop();
             lab = LectorLaberinto.cargarDesdeArchivo((String) combo.getSelectedItem());
             visitados = null;
             camino = null;
@@ -118,10 +120,42 @@ public class MainFrame extends JFrame {
 
     private void resolver(int alg) {
         if (lab == null) return;
+        if (animacionTimer != null && animacionTimer.isRunning()) animacionTimer.stop();
+
         Grafo g = lab.getGrafo();
-        visitados = alg == 0 ? g.DFS() : alg == 1 ? g.BFS() : g.caminoMasCorto();
-        camino = g.haySolucion() ? g.getCamino() : null;
-        estado.setText(g.haySolucion() ? "Camino de " + (camino.size() - 1) + " movimientos" : "Sin solución");
+        List<Vertice> todosVisitados = alg == 0 ? g.DFS() : alg == 1 ? g.BFS() : g.caminoMasCorto();
+        List<Vertice> caminoFinal = g.haySolucion() ? g.getCamino() : null;
+        String textoFinal = g.haySolucion() ? "Camino de " + (caminoFinal.size() - 1) + " movimientos" : "Sin solución";
+
+        if (!chkAnimacion.isSelected()) {
+            visitados = todosVisitados;
+            camino = caminoFinal;
+            estado.setText(textoFinal);
+            dibujo.repaint();
+            return;
+        }
+
+        estado.setText("Buscando...");
+        visitados = todosVisitados.subList(0, 0);
+        camino = null;
         dibujo.repaint();
+
+        final int[] pasoVis = {0};
+        final int[] pasoCam = {0};
+
+        animacionTimer = new Timer(15, e -> {
+            if (pasoVis[0] < todosVisitados.size()) {
+                pasoVis[0]++;
+                visitados = todosVisitados.subList(0, pasoVis[0]);
+            } else if (caminoFinal != null && pasoCam[0] < caminoFinal.size()) {
+                pasoCam[0]++;
+                camino = caminoFinal.subList(0, pasoCam[0]);
+            } else {
+                ((Timer) e.getSource()).stop();
+                estado.setText(textoFinal);
+            }
+            dibujo.repaint();
+        });
+        animacionTimer.start();
     }
 }

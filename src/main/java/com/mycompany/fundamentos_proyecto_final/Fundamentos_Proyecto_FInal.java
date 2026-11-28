@@ -6,6 +6,7 @@ import modelo.Vertice;
 import ui.VisualizadorLaberinto;
 
 import java.util.List;
+import ui.MainFrame;
 public class Fundamentos_Proyecto_FInal {
    public static GrafoMatriz laberinto = null;
     private static final java.util.Scanner s = new java.util.Scanner(System.in);
@@ -36,7 +37,9 @@ public class Fundamentos_Proyecto_FInal {
                                     "3.-Resolver laberinto con BFS\n" +
                                     "4-.Resolver laberinto con Dijkstra (camino más corto)\n" +
                                     "5.-Mostrar las tres soluciones\n" +
-                                    "6.-Salir");
+                                    "6.-Abrir Interfaz Gráfica\n" +
+                                    "7.-Salir"
+                                );
             opcion = leerEntero();
             switch (opcion) {
                 case 1:
@@ -65,6 +68,11 @@ public class Fundamentos_Proyecto_FInal {
                     System.out.println("\n");
                     break;
                 case 6:
+                    System.out.println("Abriendo Interfaz Gráfica");
+                    MainFrame frame = new MainFrame();
+                    frame.setVisible(true);
+                    break;
+                case 7:
                     System.out.println("Adiós");
                     break;
                 default:
