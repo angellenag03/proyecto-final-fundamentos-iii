@@ -1,5 +1,5 @@
 # proyecto-final-fundamentos-iii 
-# Alumnos: Chavez Salcido Jesus Andres y Sanches Navarro Angel Adrian
+# Alumnos: Chavez Salcido Jesus Andres y Sanchez Navarro Angel Adrian
 Uso en forma apoyo del agente Claude en:
 Funfamentos_Proyecto_Final para clase resolver,elegirLaberinto, y correcciones generales
 en las demás clases, creacion y borrador de clase MainFrame.java.
