@@ -31,6 +31,13 @@ public class MainFrame extends JFrame {
             int cols = logico ? (cu[0].length - 1) / 3 : cu[0].length;
             int s = Math.max(1, Math.min(getWidth() / cols, getHeight() / filas));
 
+            // centrar
+            int offsetX = (getWidth() - cols * s) / 2;
+            int offsetY = (getHeight() - filas * s) / 2;
+
+            // centrar
+            g.translate(offsetX, offsetY);
+
             if (visitados != null) {
                 g.setColor(new Color(173, 216, 230));
                 for (Vertice v : visitados)
