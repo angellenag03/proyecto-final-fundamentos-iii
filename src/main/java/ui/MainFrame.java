@@ -21,6 +21,8 @@ public class MainFrame extends JFrame {
     private List<Vertice> camino;
 
     private final JPanel dibujo = new JPanel() {
+        { setBackground(new Color(24, 26, 31)); }
+
         @Override
         protected void paintComponent(Graphics g) {
             super.paintComponent(g);
@@ -34,16 +36,19 @@ public class MainFrame extends JFrame {
             // centrar
             int offsetX = (getWidth() - cols * s) / 2;
             int offsetY = (getHeight() - filas * s) / 2;
-
+            
             // centrar
             g.translate(offsetX, offsetY);
 
+            // 1. Nodos visitados: azul oscuro/petróleo para no encandilar
             if (visitados != null) {
-                g.setColor(new Color(173, 216, 230));
+                g.setColor(new Color(40, 75, 110));
                 for (Vertice v : visitados)
                     g.fillRect(v.getColumna() * s, v.getFila() * s, s, s);
             }
-            g.setColor(Color.DARK_GRAY);
+
+            // 2. Paredes: gris claro para que resalten sobre el fondo oscuro
+            g.setColor(new Color(210, 214, 220));
             for (int r = 0; r < filas; r++) {
                 for (int c = 0; c < cols; c++) {
                     int x = c * s, y = r * s;
@@ -57,8 +62,10 @@ public class MainFrame extends JFrame {
                     }
                 }
             }
+
+            // 3. Camino solución: rojo coral brillante (o cian/verde neón)
             if (camino != null) {
-                g.setColor(Color.RED);
+                g.setColor(new Color(255, 85, 85));
                 for (int i = 1; i < camino.size(); i++) {
                     Vertice a = camino.get(i - 1), b = camino.get(i);
                     g.drawLine(a.getColumna() * s + s / 2, a.getFila() * s + s / 2,
